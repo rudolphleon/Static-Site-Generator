@@ -1,6 +1,7 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter,
+    split_nodes_link
 )
 from inline_markdown import (
     extract_markdown_images, 
@@ -11,6 +12,8 @@ from textnode import (
     text_type_bold,
     text_type_italic,
     text_type_code,
+    text_type_image,
+    text_type_link
 )
 
 
@@ -92,6 +95,37 @@ class TestInlineMarkdown(unittest.TestCase):
         expected = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
         self.assertEqual(extract_markdown_links(text), expected)
 
+class TestMarkdownSplitting(unittest.TestCase):
+    def test_split_nodes_image(self):
+        node = TextNode("This is an image ![img](url) end", text_type_text)
+        expected = [
+            TextNode("This is an image ", text_type_text),
+            TextNode("img", text_type_image, "url"),
+            TextNode(" end", text_type_text),
+        ]
+        result = split_nodes_image([node])
+        self.assertEqual(result, expected)
+
+class TestMarkdownSplitting(unittest.TestCase):
+    def test_split_nodes_link(self):
+        # Create a TextNode that includes a markdown link
+        node = TextNode("Click here [Link](https://example.com) for more info", text_type_text)
+        
+        # What we expect after the split
+        expected_output = [
+            TextNode("Click here ", text_type_text),
+            TextNode("Link", text_type_link, "https://example.com"),
+            TextNode(" for more info", text_type_text)
+        ]
+        
+        # Call the function with the node
+        result = split_nodes_link([node])
+        
+        # Assert to check if the output matches the expected output
+        self.assertEqual(result, expected_output)
+
+if __name__ == '__main__':
+    unittest.main()
 
 if __name__ == "__main__":
     unittest.main()
