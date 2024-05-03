@@ -1,11 +1,14 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter,
-    split_nodes_link
+    split_nodes_link,
+    split_nodes_image,
+    text_to_textnodes
 )
 from inline_markdown import (
     extract_markdown_images, 
-    extract_markdown_links)
+    extract_markdown_links,
+    )
 from textnode import (
     TextNode,
     text_type_text,
@@ -116,16 +119,24 @@ class TestMarkdownSplitting(unittest.TestCase):
             TextNode("Click here ", text_type_text),
             TextNode("Link", text_type_link, "https://example.com"),
             TextNode(" for more info", text_type_text)
-        ]
+]
         
         # Call the function with the node
         result = split_nodes_link([node])
         
         # Assert to check if the output matches the expected output
         self.assertEqual(result, expected_output)
+class TestMarkdownToTextNodes(unittest.TestCase):
+    def test_text_to_textnodes_simple(self):
+        text = "This is **text**"
+        expected_output = [
+            TextNode("This is ", text_type_text),
+            TextNode("text", text_type_bold),
+        ]
+        result = text_to_textnodes(text)
+        self.assertEqual(result, expected_output)
 
-if __name__ == '__main__':
-    unittest.main()
+
 
 if __name__ == "__main__":
     unittest.main()
